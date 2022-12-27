@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/incoming
+    username: root
+    password: King26lexa
+
+  jpa:
+    show-sql: true
+
