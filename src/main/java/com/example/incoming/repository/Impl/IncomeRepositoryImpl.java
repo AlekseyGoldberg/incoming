@@ -18,13 +18,13 @@ public class IncomeRepositoryImpl {
     }
 
     public String addIncome(int userId, float amount, String comment, String dataTransaction) {
-        TotalAmount totalAmountEntity = totalAmountRepository.getTotalIncome(userId);
+        float totalAmountEntity = totalAmountRepository.getTotalIncome(userId);
         float totalIncome = 0;
         if (Optional.ofNullable(totalAmountEntity).isEmpty()) {
             totalIncome += amount;
             totalAmountRepository.saveTotalIncome(userId, totalIncome);
         } else {
-            totalIncome = totalAmountEntity.getTotalIncome() + amount;
+            totalIncome = totalAmountEntity + amount;
             totalAmountRepository.updateTotalIncome(userId, totalIncome);
         }
         Income income = new Income(userId, amount, comment, dataTransaction);

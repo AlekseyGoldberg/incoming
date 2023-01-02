@@ -34,6 +34,5 @@ public class ExpenditureService {
         } catch (Exception e) {
             return "bad";
         }
-
     }
 }

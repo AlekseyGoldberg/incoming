@@ -12,11 +12,11 @@ public class TotalAmountRepository {
         this.totalAmountConnection = totalAmountConnection;
     }
 
-    public TotalAmount updateTotalIncome(int userId, float totalIncome) {
-        return totalAmountConnection.updateTotalIncome(userId, totalIncome);
+    public void updateTotalIncome(int userId, float totalIncome) {
+        totalAmountConnection.updateTotalIncome(userId, totalIncome);
     }
 
-    public TotalAmount getTotalIncome(int userId) {
+    public float getTotalIncome(int userId) {
         return totalAmountConnection.getTotalIncome(userId);
     }
 
@@ -34,7 +34,7 @@ public class TotalAmountRepository {
         return totalAmountConnection.save(totalAmount);
     }
 
-    public TotalAmount updateTotalExpenditure(int userId, float totalExpenditure) {
-        return totalAmountConnection.updateTotalExpenditure(userId, totalExpenditure);
+    public void updateTotalExpenditure(int userId, float totalExpenditure) {
+        totalAmountConnection.updateTotalExpenditure(userId, totalExpenditure);
     }
 }
