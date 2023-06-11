@@ -1,26 +1,32 @@
 package com.example.incoming.repository.Impl;
 
 
-import com.example.incoming.entity.Income;
 import com.example.incoming.entity.User;
 import com.example.incoming.repository.UserTableConnection;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+
+import javax.transaction.Transactional;
 
 @Repository
 public class UserRepositoryImpl {
-    private final com.example.incoming.repository.UserTableConnection UserTableConnection;
+    private final UserTableConnection userTableConnection;
 
-    public UserRepositoryImpl(com.example.incoming.repository.UserTableConnection userTableConnection) {
-        UserTableConnection = userTableConnection;
+    public UserRepositoryImpl(UserTableConnection userTableConnection) {
+        this.userTableConnection = userTableConnection;
     }
 
+    @Transactional
     public User getUser(String login) {
-        return UserTableConnection.findByLogin(login);
+        return userTableConnection.findByLogin(login);
     }
 
-    public User saveUser(User user){
-        return UserTableConnection.save(user);
+    @Transactional
+    public boolean existUser(String login) {
+        return userTableConnection.existsUserByLogin(login);
+    }
+
+    @Transactional
+    public User saveUser(User user) {
+        return userTableConnection.save(user);
     }
 }

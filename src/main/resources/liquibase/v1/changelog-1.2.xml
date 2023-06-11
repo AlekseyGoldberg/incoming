@@ -1,0 +1,22 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                   http://www.liquibase.org/xml/ns/dbchangelog-ext
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet id="create table plans" author="zhizhin">
+        <sql>
+            create table t_plans
+            (
+                id            bigint auto_increment primary key,
+                user_id       bigint,
+                name_plan     varchar(255),
+                sum_plan      double,
+                date_complete varchar(255),
+                date_init     timestamp,
+                is_complete   boolean default (false),
+                foreign key (user_id) references t_user (id)
+            )
+        </sql>
+    </changeSet>
+</databaseChangeLog>

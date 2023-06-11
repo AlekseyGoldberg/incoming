@@ -1,0 +1,76 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                   http://www.liquibase.org/xml/ns/dbchangelog-ext
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet id="init_db" author="zhizhin">
+        <sql>
+            create table t_user
+            (
+                id            bigint auto_increment primary key,
+                hash_password varchar(255) null,
+                jwt           varchar(255) null,
+                login         varchar(255) null
+            );
+            create table t_bank_account
+            (
+                id           bigint auto_increment primary key,
+                name_account varchar(255),
+                user_id      bigint,
+                total_amount double,
+                foreign key (user_id) references t_user (id)
+            );
+            create table t_category
+            (
+                id            bigint auto_increment primary key,
+                name_category varchar(255),
+                type_category varchar(255)
+            );
+            insert into t_category
+            values (1, 'Зарплата', 'доход');
+            insert into t_category
+            values (2, 'Бонус', 'доход');
+            insert into t_category
+            values (3, 'Пенсия', 'доход');
+            insert into t_category
+            values (4, 'Карманные расходы', 'доход');
+            insert into t_category
+            values (5, 'Питание', 'расход');
+            insert into t_category
+            values (6, 'Жизнь', 'расход');
+            insert into t_category
+            values (7, 'Красота', 'расход');
+            insert into t_category
+            values (8, 'Здоровье', 'расход');
+            insert into t_category
+            values (9, 'Транспорт', 'расход');
+            insert into t_category
+            values (10, 'Бытовое', 'расход');
+            insert into t_category
+            values (11, 'Одежда', 'расход');
+            insert into t_category
+            values (12, 'Обучение', 'расход');
+            insert into t_category
+            values (13, 'Праздники', 'расход');
+            insert into t_category
+            values (14, 'Саморазвитие', 'расход');
+
+            create table t_actions
+            (
+                id               bigint auto_increment primary key,
+                user_id          bigint,
+                amount           double,
+                comment          varchar(255),
+                date_transaction timestamp,
+                bank_account_id  bigint,
+                category_id      bigint,
+                type_operation   varchar(255),
+                foreign key (user_id) references t_user (id),
+                foreign key (bank_account_id) references t_bank_account (id),
+                foreign key (category_id) references t_category (id)
+
+            )
+        </sql>
+    </changeSet>
+</databaseChangeLog>

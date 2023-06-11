@@ -1,0 +1,33 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                   http://www.liquibase.org/xml/ns/dbchangelog-ext
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet id="init_db" author="zhizhin">
+        <sql>
+            create table t_debt
+            (
+                id          bigint auto_increment primary key,
+                user_id     bigint,
+                name_debt   varchar(255),
+                sum_debt    double,
+                account_id  bigint,
+                date_return varchar(255),
+                foreign key (user_id) references t_user (id),
+                foreign key (account_id) references t_bank_account (id)
+            );
+            create table t_invest
+            (
+                id          bigint auto_increment primary key,
+                user_id     bigint,
+                name_invest varchar(255),
+                sum_invest  double,
+                account_id  bigint,
+                date_return varchar(255),
+                foreign key (user_id) references t_user (id),
+                foreign key (account_id) references t_bank_account (id)
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

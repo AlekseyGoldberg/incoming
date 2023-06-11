@@ -1,0 +1,662 @@
+openapi: 3.0.0
+info:
+  title: Веб приложение по контролю личных финансов
+  description: Веб приложение по контролю личных финансов
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8081/'
+    description: local server
+paths:
+  /login:
+    post:
+      summary: проверка логина и пароля
+      description: логин и пароль для входа
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                login:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Success transfer
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jwt:
+                    type: string
+                    description: возвращается jwt, который надо положить в header auth и передавать с каждым запросом
+        '400':
+          description: Неверный логин или пароль
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/400'
+        '500':
+          $ref: '#/components/schemas/401'
+  /registory:
+    post:
+      summary: регистрация пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                login:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Успешно зарегистирован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/200'  
+
+        '400':
+          description: Пользователь с таким логином уже существует
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/400'  
+        '401':
+          $ref: '#/components/schemas/401'
+        '500':
+          $ref: '#/components/schemas/401'
+  /actions:
+    get:
+      summary: Список всех действий пользователя
+      responses:
+       '200':
+          description: Пользователь с таким логином уже существует
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: 
+                      type: string
+                      example: 3
+                    date:
+                      type: string
+                      example: 28.03.2022
+                    account:
+                      type: string
+                      example: сбербанк
+                    sum: 
+                      type: number
+                      example: 38.45
+                    typeOperation:
+                      type: string
+                      example: расход
+       '401':
+          $ref: '#/components/schemas/401'
+       '500':
+          $ref: '#/components/schemas/500'
+  
+  /accountsName:
+    get:
+      summary: список счетов
+      responses:
+        '200':
+          description: список счетов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    account:
+                      type: string
+                      example: сбербанк
+  /incomeCategory:
+    get:
+      summary: список категорий
+      responses:
+        '200':
+          description: список категорий
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  properties:
+                    account:
+                      type: string
+                      example: продукты
+        '401':
+          $ref: '#/components/schemas/401'
+        '500':
+          $ref: '#/components/schemas/500'
+  /expenditureCategory:
+    get:
+      summary: список категорий
+      responses:
+        '200':
+          description: список категорий
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  properties:
+                    account:
+                      type: string
+                      example: продукты
+        '401':
+          $ref: '#/components/schemas/401'
+        '500':
+          $ref: '#/components/schemas/500'
+
+  /createActions:
+    post:
+      summary: Создание действия
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                typeAction:
+                  type: string
+                  example: доход|расход
+                date:
+                  type: string
+                  example: 28.03.2023
+                account:
+                  type: string
+                  example: сбербанк
+                category: 
+                  type: string
+                  example: продукты
+                comment: 
+                  type: string
+                  example: пятерочка
+      responses:
+        '200':
+          description: Успешно зарегистирован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/200'
+  
+  /detailPage:
+    get:
+      summary: детализация действия
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: integer
+          required: true
+
+      responses:
+        '200':
+          description: детализация действия
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  id: 
+                    type: string
+                    example: 3
+                  date:
+                    type: string
+                    example: 28.03.2022
+                  account:
+                    type: string
+                    example: сбербанк
+                  sum: 
+                    type: number
+                    example: 38.45
+                  comment:
+                    type: string
+                    example: хлеб
+                  typeOperation:
+                    type: string
+                    example: расход
+  /detailPage/delete:
+    get:
+      summary: удаление действия
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Успешно удалено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/200'
+  /detailPage/edit:
+    post:
+      summary: изменить действие
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/detailPageReq'
+      responses:
+        '200':
+          description: Успешно изменено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/200'
+  /accounts:
+    get:
+      description: Вывод средств на счете
+      responses:
+        '200':
+          description: Вывод средств на счете
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/financeResp'
+                
+  /debt:
+    get:
+      description: Вывод личных долгов
+      responses:
+        '200':
+          description: Вывод личных долгов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/financeResp'
+  /invest:
+    get:
+      description: Вывод личных инвестиций
+      responses:
+        '200':
+          description: Вывод личных инвестиций
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/financeResp'
+  /createAccount:
+    post:
+      description: создание счета
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nameAccount:
+                  type: string
+                  example: sberbank
+                initSum:
+                  type: string 
+                  example: 3000
+      responses:
+        '200':
+          description: Вывод личных инвестиций
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/200'
+  /createDebt:
+    post:
+      description: создание долга
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createDebtInvestDto'
+      responses:
+        '200':
+          description: Долг успешно созадн
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/200'
+  /createInvest:
+    post:
+      description: создание инвестиции
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createDebtInvestDto'
+      responses:
+        '200':
+          description: Долг успешно созадн
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/200'
+
+  /detalizationDebt/{id}:
+    get:
+      description: детализация долга
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: детализация долга
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/detalizationDebtRespInvestDto'
+  /detalizationInvest/{id}:
+    get:
+      description: детализация долга
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: детализация долга
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/detalizationDebtRespInvestDto'
+
+  /detalizationDebt/edit:
+    post:
+      description: детализация долга
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/detalizationDebtInvestEdit'
+      responses:
+        '200':
+          $ref: '#/components/schemas/200'
+
+  /detalizationDebt/delete/{id}:
+    delete:
+      description: детализация долга
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: удаление долга
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/200'
+
+  /detalizationInvest/edit:
+    post:
+      description: детализация инвестиции
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/detalizationDebtInvestEdit'
+      responses:
+        '200':
+          description: изменение инвестиции
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/200'
+
+  /detalizationInvest/delete/{id}:
+    delete:
+      description: детализация долга
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: удаление инвестиции
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/200'
+  /plans:
+    get:
+      description: список планов
+      responses:
+        '200':
+          description: список планов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                      example: отдых
+                    summ:
+                      type: string
+                      example: 8000
+                    date:
+                      type: string
+                      example: 28.12.2023
+                    isComplete:
+                      type: boolean
+                      example: true
+
+  /deletePlan/{id}:
+    delete:
+      description: удаление плана
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: удаление инвестиции
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/200'
+
+  /createPlan:
+    post:
+      description: список планов
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: отдых
+                summ:
+                  type: string
+                  example: 8000
+                date:
+                  type: string
+                  example: 28.12.2023
+      responses:
+        '200':
+          $ref: '#/components/schemas/200'
+
+  /completePlan/{id}:
+    get:
+      description: выполнение плана
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: удаление инвестиции
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/200'
+
+
+components:
+  schemas:
+    200:
+      type: object
+      properties:
+          message:
+            type: string
+            example: ok
+    401:
+      description: доступ запрещен, jwt закончился
+    400:
+      type: object
+      properties:
+        message:
+          type: string
+          example: some message
+    500:
+      description: ошибка сервера
+      type: object
+      properties:
+        message:
+          type: string
+          example: internall error
+    detailPageReq:
+      description: запрос для детализации действия
+      type: object
+      properties:
+        id: 
+          type: string
+          example: 3
+        date:
+          type: string
+          example: 28.03.2022
+        account:
+          type: string
+          example: сбербанк
+        sum: 
+          type: number
+          example: 38.45
+        category:
+          type: string
+        comment:
+          type: string
+        typeOperation:
+          type: string
+          example: расход
+    financeResp:
+      description: dto для моих финансов
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            type: object
+            properties:
+              id: 
+                type: string
+              message:
+                type: string
+                example: сообщение
+              amount:
+                type: string
+        sumAmount:
+          type: string
+          example: 400
+    createDebtInvestDto:
+      description: dto для долга и инвестиции
+      type: object
+      properties:
+        name:
+          type: string
+          example: кирилл
+        sum:
+          type: string
+          example: 5455
+        dateReturn:
+          type: string
+          example: 23.11.2023
+        accountName:
+          type: string
+          example: карта сбербанка
+    detalizationDebtReqInvestDto:
+      description: запрос детализации долга/инвестиции
+      type: object
+      properties:
+        id:
+          type: string
+          example: 21
+    detalizationDebtRespInvestDto:
+      description: запрос детализации долга/инвестиции
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        name:
+          type: string
+          example: кирилл
+        nameAccount: 
+          type: string
+          example: карта сбербанка
+        sum:
+          type: string
+          example: 5455
+        dateReturn:
+          type: string
+          example: 23.11.2023
+
+    detalizationDebtInvestEdit:
+      description: запрос детализации долга/инвестиции
+      type: object
+      properties:
+        id:
+          type: string
+          example: 2
+        name:
+          type: string
+          example: кирилл
+        sum:
+          type: string
+          example: 5455
+        dateReturn:
+          type: string
+          example: 23.11.2023
+        dateInit:
+          type: string
+          example: 12.12.2023
